@@ -1,0 +1,463 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Carnation Garden</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=DM+Sans:wght@400;500&display=swap">
+<style>
+  /* Layout: a quiet header line over one full-bleed night-garden canvas.
+     Single committed look: dusk violet ground, lavender-to-aubergine petals. */
+  :root {
+    --night: #0b0720;
+    --dusk: #2a1a55;
+    --petal-light: #d9b3ff;
+    --petal-deep: #4a1480;
+    --leaf: #7fae8c;
+    --ink: #efe6ff;
+    --ink-soft: #b9a8dd;
+    --line: #3b2a6e;
+    --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--night);
+    color: var(--ink);
+    font-family: var(--body);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+  }
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px 16px;
+  }
+  h1 {
+    width: 100%;
+    margin: 0;
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+    letter-spacing: 0.01em;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .hint {
+    width: 100%;
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  .stage {
+    position: relative;
+    flex: 1;
+    min-height: 320px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--night);
+  }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; touch-action: manipulation; }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .count { color: var(--ink-soft); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  button {
+    font: 500 0.9rem var(--body);
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--dusk); }
+  button:focus-visible, canvas:focus-visible { outline: 2px solid var(--petal-light); outline-offset: 2px; }
+  .message {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: clamp(10px, 2vw, 14px) clamp(12px, 3vw, 18px);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: rgba(42, 26, 85, 0.72);
+    color: var(--ink);
+    text-align: center;
+  }
+  .message strong {
+    display: block;
+    margin-bottom: 2px;
+    font-family: var(--display);
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .message em {
+    display: block;
+    margin-bottom: 6px;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+  }
+  .message p {
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .message p + p { margin-top: 4px; }
+
+  @media (max-width: 600px) {
+    body { padding-block: 10px; gap: 8px; }
+    header { align-items: center; }
+    h1 { font-size: clamp(1.45rem, 7vw, 2rem); }
+    .hint { font-size: 0.82rem; }
+    .message p { font-size: 0.82rem; line-height: 1.4; }
+    .stage { min-height: 260px; }
+  }
+
+  @media (max-height: 700px) {
+    body { overflow: auto; }
+    .stage { min-height: 220px; }
+  }
+</style>
+
+<header>
+  <h1>Carnation Garden</h1>
+</header>
+<section class="message" aria-label="A message for Gemma">
+  <strong>For you, Gemma 🌷</strong>
+  <em>It will be okay. You can do this.</em>
+  <p>Whatever you're going through right now, remember that you're stronger than you think. Take things one step at a time. Don't be too hard on yourself, and never forget how capable you are.</p>
+  <p>I'm cheering for you, always. 💜</p>
+</section>
+<div class="stage"><canvas id="c" tabindex="0" aria-label="Garden of purple carnations. Click to plant a new carnation."></canvas></div>
+<p class="hint">Click the garden to plant a carnation. Click a bloom to shake loose its petals.</p>
+<div class="bar">
+  <span class="count" id="count" aria-live="polite"></span>
+  <button id="clear" type="button">Clear garden</button>
+</div>
+
+<script>
+(function () {
+  var canvas = document.getElementById("c");
+  var ctx = canvas.getContext("2d");
+  var countEl = document.getElementById("count");
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var TAU = Math.PI * 2;
+  var LAYERS = 8;
+  var OUTER = [217, 179, 255], INNER = [74, 20, 128];
+  var MAX_FLOWERS = 36;
+
+  var W = 0, H = 0, S = 40, DPR = 1;
+  var flowers = [];
+  var petals = [];
+
+  function ease(t) { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); }
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function layerColor(i, shade) {
+    var k = i / (LAYERS - 1), m = shade === undefined ? 1 : shade;
+    var r = (OUTER[0] * (1 - k) + INNER[0] * k) * m;
+    var g = (OUTER[1] * (1 - k) + INNER[1] * k) * m;
+    var b = (OUTER[2] * (1 - k) + INNER[2] * k) * m;
+    return "rgb(" + (r | 0) + "," + (g | 0) + "," + (b | 0) + ")";
+  }
+  function bez(p0, p1, p2, t) {
+    var u = 1 - t;
+    return [u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0],
+            u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1]];
+  }
+
+  // stars (fixed, normalised)
+  var stars = [];
+  for (var i = 0; i < 70; i++) stars.push({ x: Math.random(), y: Math.random() * 0.85, ph: rnd(0, TAU), sp: rnd(0.6, 1.6) });
+  // ambient drifting petals
+  var ambient = [];
+  for (var j = 0; j < 14; j++) ambient.push({ x: Math.random(), y: Math.random(), sp: rnd(0.012, 0.03), ph: rnd(0, TAU) });
+
+  function resize() {
+    var r = canvas.getBoundingClientRect();
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    S = Math.min(H / 11, W / 10);
+  }
+
+  function addFlower(wx, wy, born) {
+    var maxY = H / S - 0.8;
+    var size = 0.7 + Math.min(1, Math.max(0, wy) / 10) * 0.6;
+    size *= Math.min(1, (W / S) / 11);
+    var hy = Math.max(2.4, Math.min(maxY, wy)) - 0.35 * size;
+    var x0 = wx + rnd(-0.8, 0.8);
+    flowers.push({
+      x0: x0, hx: wx + rnd(-0.4, 0.4), hy: hy, size: size,
+      born: born, ph: rnd(0, TAU), bend: (Math.random() < 0.5 ? -1 : 1) * rnd(0.3, 0.7)
+    });
+    if (flowers.length > MAX_FLOWERS) flowers.shift();
+    updateCount();
+  }
+
+  function updateCount() {
+    countEl.textContent = flowers.length + (flowers.length === 1 ? " carnation" : " carnations") + " in the garden";
+  }
+
+  function spawnBurst(f, t) {
+    var tip = headPos(f, t);
+    for (var i = 0; i < 16; i++) {
+      var a = rnd(0, TAU), sp = rnd(1.2, 3.4);
+      petals.push({
+        x: tip[0], y: tip[1], vx: Math.cos(a) * sp, vy: Math.sin(a) * sp * 0.8 + 1.2,
+        rot: rnd(0, TAU), vr: rnd(-4, 4), life: 0, max: rnd(3.5, 6), size: rnd(0.1, 0.17), layer: (Math.random() * LAYERS) | 0
+      });
+    }
+  }
+
+  function stemState(f, t) {
+    var age = t - f.born;
+    var g = reduced ? 1 : ease((age - 0.1) / 1.8);
+    var bloom = reduced ? 1 : ease((age - 1.5) / 2.4);
+    var sway = reduced ? 0 : 0.28 * Math.sin(t * 1.15 + f.ph) * Math.min(g, 1);
+    var p0 = [f.x0, 0.3];
+    var p2 = [f.hx + sway * (f.hy / 6), f.hy];
+    var p1 = [f.x0 + (f.hx - f.x0) * 0.1 + f.bend, f.hy * 0.55];
+    return { g: g, bloom: bloom, sway: sway, p0: p0, p1: p1, p2: p2 };
+  }
+
+  function headPos(f, t) {
+    var st = stemState(f, t);
+    var tip = bez(st.p0, st.p1, st.p2, Math.max(0.001, st.g));
+    return [tip[0], tip[1] + 0.35 * f.size];
+  }
+
+  function drawLeaf(base, angle, length, width, sway, grow) {
+    if (grow <= 0) return;
+    var a = angle + sway * 0.3, c = Math.cos(a), s = Math.sin(a), n = 24, k, u, px, py;
+    ctx.beginPath();
+    for (k = 0; k <= n; k++) {
+      u = k / n;
+      px = length * grow * u;
+      py = width * grow * Math.pow(Math.sin(Math.PI * u), 0.8) * (1 - 0.25 * u);
+      var X = base[0] + px * c - py * s, Y = base[1] + px * s + py * c;
+      if (k === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+    }
+    for (k = n; k >= 0; k--) {
+      u = k / n;
+      px = length * grow * u;
+      py = -width * grow * Math.pow(Math.sin(Math.PI * u), 0.8) * (1 - 0.25 * u);
+      ctx.lineTo(base[0] + px * c - py * s, base[1] + px * s + py * c);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "#7fae8c";
+    ctx.strokeStyle = "#4d7c5a";
+    ctx.lineWidth = 0.6 / S;
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  function drawHead(cx, cy, s, bloom, tilt) {
+    var c = Math.cos(tilt), sn = Math.sin(tilt), i, k, th;
+    // calyx
+    if (bloom > 0.02) {
+      var w = 0.28 * s * (0.6 + 0.4 * ease(bloom * 2));
+      var cup = [[-w, 0], [w, 0], [w * 1.5, 0.275 * s], [0, 0.36 * s], [-w * 1.5, 0.275 * s]];
+      ctx.beginPath();
+      for (k = 0; k < cup.length; k++) {
+        var X = cx + cup[k][0] * c + cup[k][1] * -sn * -1 * 0 + (cup[k][0] * 0);
+        // rotate point (x,y) by tilt, then translate under the head
+        var rx = cup[k][0] * c - cup[k][1] * sn, ry = cup[k][0] * sn + cup[k][1] * c;
+        if (k === 0) ctx.moveTo(cx + rx, cy - 0.45 * s + ry); else ctx.lineTo(cx + rx, cy - 0.45 * s + ry);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "#6fa56f"; ctx.strokeStyle = "#3f6f45"; ctx.lineWidth = 0.6 / S;
+      ctx.fill(); ctx.stroke();
+    }
+    var steps = 180;
+    for (i = 0; i < LAYERS; i++) {
+      var local = ease((bloom - i * 0.07) / 0.45);
+      if (local <= 0) continue;
+      var R = s * (1 - 0.095 * i) * (0.25 + 0.75 * local);
+      var flat = 0.62 + 0.18 * local;
+      var lift = 0.1 * s * (i / LAYERS);
+      ctx.beginPath();
+      for (k = 0; k <= steps; k++) {
+        th = k / steps * TAU;
+        var r = R * (0.88 + 0.13 * Math.abs(Math.sin(9 * th + i * 0.7)) + 0.04 * Math.cos(3 * th + i));
+        var x = r * Math.cos(th), y = r * Math.sin(th) * flat;
+        var px = cx + x * c - y * sn, py = cy + lift + x * sn + y * c;
+        if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fillStyle = layerColor(i);
+      ctx.strokeStyle = layerColor(i, 0.6);
+      ctx.lineWidth = 0.7 / S;
+      ctx.fill(); ctx.stroke();
+      // folds
+      ctx.beginPath();
+      for (k = 0; k < 14; k++) {
+        var a = TAU * k / 14 + i * 0.4;
+        var xs0 = 0.2 * R * Math.cos(a), ys0 = 0.2 * R * Math.sin(a) * flat;
+        var xs1 = 0.92 * R * Math.cos(a), ys1 = 0.92 * R * Math.sin(a) * flat;
+        ctx.moveTo(cx + xs0 * c - ys0 * sn, cy + lift + xs0 * sn + ys0 * c);
+        ctx.lineTo(cx + xs1 * c - ys1 * sn, cy + lift + xs1 * sn + ys1 * c);
+      }
+      ctx.globalAlpha = 0.35;
+      ctx.lineWidth = 0.5 / S;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function drawFlower(f, t) {
+    var st = stemState(f, t);
+    if (st.g <= 0) return;
+    var n = 50, k, pt;
+    ctx.beginPath();
+    for (k = 0; k <= n; k++) {
+      pt = bez(st.p0, st.p1, st.p2, st.g * k / n);
+      if (k === 0) ctx.moveTo(pt[0], pt[1]); else ctx.lineTo(pt[0], pt[1]);
+    }
+    ctx.strokeStyle = "#5f9560"; ctx.lineWidth = 3.2 / S; ctx.lineCap = "round";
+    ctx.stroke();
+
+    var nodes = [0.28, 0.5, 0.7];
+    for (k = 0; k < 3; k++) {
+      var tn = nodes[k];
+      if (st.g < tn) continue;
+      var base = bez(st.p0, st.p1, st.p2, tn);
+      var side = (k + Math.round(f.ph * 3)) % 2 === 0 ? 1 : -1;
+      drawLeaf(base, Math.PI / 2 - side * 0.95, 1.5 * f.size, 0.16 * f.size, st.sway, ease((st.g - tn) / 0.3));
+    }
+
+    var tip = bez(st.p0, st.p1, st.p2, st.g);
+    var prev = bez(st.p0, st.p1, st.p2, Math.max(0, st.g - 0.05));
+    var tilt = (Math.atan2(tip[1] - prev[1], tip[0] - prev[0]) - Math.PI / 2) * 0.6;
+    if (st.bloom > 0) {
+      drawHead(tip[0], tip[1] + 0.35 * f.size, f.size, st.bloom, tilt);
+    } else {
+      ctx.beginPath(); ctx.arc(tip[0], tip[1], 0.1, 0, TAU);
+      ctx.fillStyle = "#8a4fd0"; ctx.fill();
+    }
+  }
+
+  function drawPetal(p) {
+    var fade = 1 - Math.pow(p.life / p.max, 2);
+    ctx.save();
+    ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+    ctx.globalAlpha = Math.max(0, fade) * 0.9;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, TAU);
+    ctx.fillStyle = layerColor(p.layer);
+    ctx.fill();
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
+  var last = performance.now() / 1000;
+  function frame() {
+    var t = performance.now() / 1000, dt = Math.min(0.05, t - last);
+    last = t;
+
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#3b1f6b"); bg.addColorStop(0.55, "#1d1147"); bg.addColorStop(1, "#0b0720");
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    var i;
+    for (i = 0; i < stars.length; i++) {
+      var s = stars[i], tw = reduced ? 0.6 : Math.abs(Math.sin(t * s.sp + s.ph));
+      ctx.globalAlpha = 0.15 + 0.6 * tw;
+      ctx.fillStyle = "#f3e6ff";
+      ctx.beginPath(); ctx.arc(s.x * W, s.y * H, 0.6 + 1.6 * tw * tw, 0, TAU); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // world transform: centre x, ground at bottom, y up
+    ctx.setTransform(DPR * S, 0, 0, -DPR * S, DPR * W / 2, DPR * H);
+    // ground strip
+    ctx.fillStyle = "#120a2b";
+    ctx.fillRect(-W / S, 0, 2 * W / S, 0.5);
+
+    for (i = 0; i < flowers.length; i++) drawFlower(flowers[i], t);
+
+    // ambient petals once something has bloomed
+    if (!reduced && flowers.length) {
+      ctx.fillStyle = "#c58cff";
+      for (i = 0; i < ambient.length; i++) {
+        var a = ambient[i];
+        var ay = ((a.y - a.sp * t) % 1 + 1) % 1;
+        var ax = a.x + 0.03 * Math.sin(t * 0.8 + a.ph);
+        ctx.globalAlpha = 0.45;
+        ctx.beginPath();
+        ctx.arc((ax - 0.5) * W / S, ay * H / S, 0.07, 0, TAU);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // burst petals
+    for (i = petals.length - 1; i >= 0; i--) {
+      var p = petals[i];
+      p.life += dt;
+      if (p.life > p.max || p.y < 0.2) { petals.splice(i, 1); continue; }
+      p.vy -= 3.2 * dt;
+      p.vx *= 1 - 0.8 * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+      drawPetal(p);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function toWorld(ev) {
+    var r = canvas.getBoundingClientRect();
+    return [(ev.clientX - r.left - W / 2) / S, (r.bottom - ev.clientY) / S];
+  }
+
+  function interact(wx, wy) {
+    var t = performance.now() / 1000, hit = null, i;
+    for (i = flowers.length - 1; i >= 0; i--) {
+      var f = flowers[i], st = stemState(f, t);
+      if (st.bloom < 0.5) continue;
+      var h = headPos(f, t);
+      if (Math.hypot(h[0] - wx, (h[1] - wy) * 1.2) < f.size * 1.05) { hit = f; break; }
+    }
+    if (hit) spawnBurst(hit, t);
+    else addFlower(wx, wy, t);
+  }
+
+  canvas.addEventListener("pointerdown", function (ev) {
+    var w = toWorld(ev);
+    interact(w[0], w[1]);
+  });
+  canvas.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") {
+      ev.preventDefault();
+      interact(rnd(-W / S / 2 + 1, W / S / 2 - 1), rnd(3, H / S - 1));
+    }
+  });
+  document.getElementById("clear").addEventListener("click", function () {
+    flowers.length = 0; petals.length = 0; updateCount();
+  });
+  window.addEventListener("resize", resize);
+
+  resize();
+  // starting garden
+  var t0 = performance.now() / 1000;
+  var span = W / S;
+  var seeds = [[-0.28, 6.4, 0], [0.0, 8.3, 0.4], [0.27, 6.9, 0.8], [-0.1, 4.7, 1.3], [0.14, 5.0, 1.6]];
+  seeds.forEach(function (sd) {
+    addFlower(sd[0] * span * 1.15, sd[1] + 0.35, t0 + sd[2]);
+  });
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>
